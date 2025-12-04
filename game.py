@@ -45,7 +45,23 @@ class Game():
         self.game_won = False
         self.winner = ""
 
+    # 
     # Screen functions
+    # 
+    
+    # Draw the screen
+    def draw_start_screen_frame(self):
+        # Fill the screen with black
+        self.screen.fill(BLACK)
+
+        # Title
+        title = self.font40.render(f"Tic-Tac-Toe", True, WHITE)
+        self.screen.blit(title, ((screen_width / 2) - (title.get_width() / 2), screen_height / 2  - screen_height / 4))
+
+        instuctions = self.font20.render(f"Press 'SPACE' to play", True, WHITE)
+        self.screen.blit(instuctions, (screen_width / 2 - 50, screen_height / 2 + 20))
+
+    # Start screen loop
     def start_screen(self):
         for event in pygame.event.get():
             # Handle quit event
@@ -57,15 +73,7 @@ class Game():
                 if event.key == pygame.K_SPACE:
                     self.game_started = True
         
-        # Fill the screen with black
-        self.screen.fill(BLACK)
-
-        # Title
-        title = self.font40.render(f"Tic-Tac-Toe", True, WHITE)
-        self.screen.blit(title, (screen_width / 2 - 50, screen_height / 2 - 20))
-
-        instuctions = self.font20.render(f"Press 'SPACE' to play", True, WHITE)
-        self.screen.blit(instuctions, (screen_width / 2 - 50, screen_height / 2 + 20))
+        self.draw_start_screen_frame()
 
         # Update the display
         pygame.display.flip()
@@ -197,9 +205,6 @@ class Game():
                     self.game_won = False
                     self.winner = ""
 
-                    # Rerun the game
-                    self.run()
-
         # Clear the screen
         self.screen.fill(BLACK)
 
@@ -228,3 +233,6 @@ class Game():
         # When a player has won
         while self.game_won and self.game_started:
             self.win_screen()
+
+        # Rerun the game
+        self.run()
