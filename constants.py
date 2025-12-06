@@ -6,12 +6,13 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (199, 20, 20)
 BLUE = (52, 85, 235)
+GRAY = (64, 59, 59)
 
 # -----------------------------------------------------------------
 
 screen_width = 800
 screen_height = 800
-screen_center = [int(screen_width / 2), int(screen_height / 2)]
+screen_center =(int(screen_width / 2), int(screen_height / 2))
 
 tile_width = 200
 

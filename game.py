@@ -23,9 +23,15 @@ class Game():
         # Game start
         self.game_started = False
 
-        # Font
-        self.font40 = pygame.font.SysFont("Arial", 40)
-        self.font20 = pygame.font.SysFont("Arial", 20)
+        # Font, images, and sounds
+        self.font80 = pygame.font.SysFont("Arial", 80, bold=True)
+        self.font40 = pygame.font.SysFont("Arial", 40, bold=True)
+        self.font20 = pygame.font.SysFont("Arial", 20, bold=True)
+
+        self.icon = pygame.image.load("assets/icon.ico").convert_alpha()
+        pygame.display.set_icon(self.icon) # Set icon
+
+        self.home_image = pygame.image.load("assets/home.png").convert_alpha()
 
         # Board setup
         self.board = Board()
@@ -51,15 +57,48 @@ class Game():
     
     # Draw the screen
     def draw_start_screen_frame(self):
+        # mouse_pos = pygame.mouse.get_pos()
+
         # Fill the screen with black
         self.screen.fill(BLACK)
 
-        # Title
-        title = self.font40.render(f"Tic-Tac-Toe", True, WHITE)
-        self.screen.blit(title, ((screen_width / 2) - (title.get_width() / 2), screen_height / 2  - screen_height / 4))
+        title_center_y = (screen_height / 2) - (screen_height / 3)
+        instructions_center_y = (screen_height / 2) + (screen_height / 3)
 
-        instuctions = self.font20.render(f"Press 'SPACE' to play", True, WHITE)
-        self.screen.blit(instuctions, (screen_width / 2 - 50, screen_height / 2 + 20))
+        # Title
+        title = self.font80.render(f"Tic-Tac-Toe", True, WHITE)
+        self.screen.blit(title, ((screen_width / 2) - (title.get_width() / 2), title_center_y))
+
+        # Local multiplayer
+        local_instructions = self.font40.render(f"Press '1' to play local", True, WHITE)
+        self.screen.blit(local_instructions, ((screen_width / 2) - (local_instructions.get_width() / 2), instructions_center_y - local_instructions.get_height() / 2))
+
+        # Button test
+        # local_button = [(screen_width / 2) - (screen_width / 3), 3 * (screen_height / 4), (screen_width / 4), (screen_height / 12)]
+
+        # if mouse_pos[0] > local_button[0] and mouse_pos[0] < local_button[0] + local_button[2] and mouse_pos[1] > local_button[1] and mouse_pos[1] < local_button[1] + local_button[3]:
+        #     local_border_width = 0
+        # else:
+        #     local_border_width = 5
+
+        # pygame.draw.rect(self.screen, GRAY, local_button, local_border_width)
+
+        # Play AI
+        ai_instructions = self.font40.render(f"Press '2' to play AI", True, WHITE)
+        self.screen.blit(ai_instructions, ((screen_width / 2) - (ai_instructions.get_width() / 2), instructions_center_y + local_instructions.get_height() / 2))
+
+        # Button test
+        # ai_button = [(screen_width / 2), 3 * (screen_height / 4), (screen_width / 4), (screen_height / 12)]
+
+        # if mouse_pos[0] > ai_button[0] and mouse_pos[0] < ai_button[0] + ai_button[2] and mouse_pos[1] > ai_button[1] and mouse_pos[1] < ai_button[1] + ai_button[3]:
+        #     ai_border_width = 0
+        # else:
+        #     ai_border_width = 5
+
+        # pygame.draw.rect(self.screen, GRAY, ai_button, ai_border_width)
+
+        # Home screen image
+        self.screen.blit(self.home_image, self.home_image.get_rect(center = screen_center))
 
     # Start screen loop
     def start_screen(self):
@@ -70,7 +109,7 @@ class Game():
                 sys.exit()
             # Handle game start event
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_1:
                     self.game_started = True
         
         self.draw_start_screen_frame()
