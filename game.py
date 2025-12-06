@@ -145,8 +145,6 @@ class Game():
                             self.turn = "RED"
 
                     # print(f"Mouse button clicked at {coords} --- nearest to the tile at index {nearest_tile}")
-                else:
-                    pass
 
         # Clear the screen
         self.screen.fill(BLACK)
