@@ -7,6 +7,7 @@ from constants import *
 from board import Board
 from piece import Piece
 from player import Player
+from ai import AIPlayer
 
 # ---------------------------------------------------
 
@@ -42,7 +43,7 @@ class Game():
 
         # Players
         self.p1 = Player(RED)
-        self.p2 = Player(BLUE)
+        self.p2 = None
         self.curr_move = 1
 
         self.turn = "RED"
@@ -50,6 +51,7 @@ class Game():
         # Check for game win
         self.game_won = False
         self.winner = ""
+        self.last_winner = ""
 
     # 
     # Screen functions
@@ -111,6 +113,10 @@ class Game():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:
                     self.game_started = True
+                    self.p2 = Player(BLUE)
+                elif event.key == pygame.K_2:
+                    self.game_started = True
+                    self.p2 = AIPlayer(BLUE)
         
         self.draw_start_screen_frame()
 
@@ -126,7 +132,8 @@ class Game():
                 sys.exit()
             # Handle keydown events
             if event.type == pygame.KEYDOWN:
-                pass
+                if event.key == pygame.K_SPACE:
+                    print(self.last_winner)
             # Handle mouse click events
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if not self.game_won:
@@ -137,18 +144,18 @@ class Game():
                     # If empty
                     if self.board.get_tile_status(nearest_tile):
                         # If p1's turn
-                        if self.curr_move % 2 == 1:
+                        if self.turn == "RED":
                             # Mark tile as covered
                             self.board.set_tile_status(nearest_tile)
 
                             # Create new piece with p1's color
-                            new_piece = Piece(self.p1.color, self.board.get_tile_center(nearest_tile))
+                            new_piece = Piece(self.p1.color, self.board.get_tile_center(nearest_tile), nearest_tile)
                             self.p1.pieces.append(nearest_tile)
                             self.pieces.add(new_piece)
 
                             self.curr_move += 1 # Next move
 
-                            check_result = self.board.check_win(self.p1.pieces, " RED", self.p1) # Check for win
+                            check_result = self.board.check_win(self.p1.pieces, "RED", self.p1) # Check for win
                             if check_result[0]:
                                 self.game_won = check_result[0]
                                 self.winner = check_result[1]
@@ -165,7 +172,7 @@ class Game():
                             self.board.set_tile_status(nearest_tile)
 
                             # Create new piece with p2's color
-                            new_piece = Piece(self.p2.color, self.board.get_tile_center(nearest_tile))
+                            new_piece = Piece(self.p2.color, self.board.get_tile_center(nearest_tile), nearest_tile)
                             self.p2.pieces.append(nearest_tile)
                             self.pieces.add(new_piece)
 
@@ -234,9 +241,20 @@ class Game():
                     for piece in self.pieces.sprites():
                         piece.kill()
                     
-                    # Reset the move count
+                    # Reset the move count and turn
                     self.curr_move = 1
-                    self.turn = "RED"
+
+                    if self.winner == "RED":
+                        self.last_winner = "RED"
+                        self.turn = "BLUE"
+                    elif self.winner == "BLUE":
+                        self.last_winner = "BLUE"
+                        self.turn = "RED"
+                    else:
+                        if self.last_winner == "RED":
+                            self.turn = "BLUE"
+                        else:
+                            self.turn = "RED"
 
                     # Reset the win boolean and the winner
                     self.game_won = False
