@@ -9,8 +9,7 @@ class AIPlayer(Player):
 	def __init__(self, color):
 		super().__init__(color)
 
-	
-
+    # AI helper functions
 	def check_board(self):
 		pass
 
@@ -20,6 +19,6 @@ class AIPlayer(Player):
 	def check_self_pieces(self):
 		pass
 
-	# AI turn
+	# Overall function to make a move for AI
 	def make_move(self):
 		pass
