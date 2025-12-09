@@ -24,6 +24,7 @@ class Game():
 
         # Game start
         self.game_started = False
+        self.local = None
 
         # Font, images, and sounds
         self.font80 = pygame.font.SysFont("Arial", 80, bold=True)
@@ -114,9 +115,11 @@ class Game():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:
                     self.game_started = True
+                    self.local = True
                     self.p2 = Player(BLUE)
                 elif event.key == pygame.K_2:
                     self.game_started = True
+                    self.local = False
                     self.p2 = AIPlayer(BLUE)
         
         self.draw_start_screen_frame()
@@ -229,7 +232,7 @@ class Game():
             # Handle keydown events
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    print(self.board.board)
+                    print(self.turn)
             # Handle mouse click events
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if not self.game_won:
@@ -250,44 +253,48 @@ class Game():
 
                                 self.curr_move += 1 # Next move
 
-                                check_result = self.board.check_win(self.p1.pieces, "RED", self.p1) # Check for win
+                                print("checking for win")
+                                print(self.p1.pieces)
+
+                                check_result = check_win(self.p1.pieces, "RED", self.p1) # Check for win
                                 if check_result[0]:
                                     self.game_won = check_result[0]
                                     self.winner = check_result[1]
                                 else:
                                     # Check for a tie
-                                    tie_check_result = self.board.check_tie()
+                                    tie_check_result = check_tie(self.board.board)
                                     self.game_won = tie_check_result[0]
                                     self.winner = tie_check_result[1]
 
                                 self.turn = "BLUE"
-                        # if p2's turn
-                        else:
-                            # Check moves
-                            move_index = self.p2.make_move(self.board)
-
-                            new_piece = Piece(self.p2.color, self.board.get_tile_center(move_index), move_index)
-                            self.p1.pieces.append(move_index)
-                            self.pieces.add(new_piece)
-
-                            self.curr_move += 1 # Next move
-
-                            check_result = self.board.check_win(self.p2.pieces, "BLUE", self.p2) # Check for win
-                            if check_result[0]:
-                                self.game_won = check_result[0]
-                                self.winner = check_result[1]
-                            else:
-                                # Check for a tie
-                                tie_check_result = self.board.check_tie()
-                                self.game_won = tie_check_result[0]
-                                self.winner = tie_check_result[1]
-
-                            self.turn = "RED"
 
                     # print(f"Mouse button clicked at {coords} --- nearest to the tile at index {nearest_tile}")
 
         # Clear the screen
         self.screen.fill(BLACK)
+
+        # AI Player logic
+        if self.turn == "BLUE":
+            move_index = self.p2.make_move(self.board.board, self.p2.pieces)
+            self.board.set_tile_status(move_index, self.p2.char)
+
+            new_piece = Piece(self.p2.color, self.board.get_tile_center(move_index), move_index)
+            self.p1.pieces.append(move_index)
+            self.pieces.add(new_piece)
+
+            self.curr_move += 1 # Next move
+
+            check_result = check_win(self.p2.pieces, "BLUE", self.p2) # Check for win
+            if check_result[0]:
+                self.game_won = check_result[0]
+                self.winner = check_result[1]
+            else:
+                # Check for a tie
+                tie_check_result = check_tie(self.board.board)
+                self.game_won = tie_check_result[0]
+                self.winner = tie_check_result[1]
+
+            self.turn = "RED"
 
         # Display the score
         p1_score = self.font20.render(f"RED: {self.p1.score}", True, WHITE)
@@ -377,7 +384,10 @@ class Game():
 
         # Main game loop
         while not self.game_won and self.game_started:
-            self.round_screen()
+            if self.local:
+                self.round_screen()
+            else:
+                self.ai_round_screen()
 
         # When a player has won
         while self.game_won and self.game_started:
