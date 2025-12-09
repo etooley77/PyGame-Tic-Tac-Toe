@@ -219,6 +219,101 @@ class Game():
         pygame.display.flip()
         self.game_clock.tick(60)
 
+    def ai_round_screen(self):
+        for event in pygame.event.get():
+            # Handle quit event
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            # Handle keydown events
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    print(self.board.board)
+            # Handle mouse click events
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if not self.game_won:
+                    # Find the nearest tile and check if it is empty
+                    coords = pygame.mouse.get_pos()
+                    nearest_tile = self.board.get_nearest_tile(coords)
+                    
+                    # If empty
+                    if self.board.get_tile_status(nearest_tile):
+                        # If p1's turn
+                        if self.turn == "RED":
+                            # Mark tile as covered
+                            if self.board.set_tile_status(nearest_tile, self.p1.char):
+                                # Create new piece with p1's color
+                                new_piece = Piece(self.p1.color, self.board.get_tile_center(nearest_tile), nearest_tile)
+                                self.p1.pieces.append(nearest_tile)
+                                self.pieces.add(new_piece)
+
+                                self.curr_move += 1 # Next move
+
+                                check_result = self.board.check_win(self.p1.pieces, "RED", self.p1) # Check for win
+                                if check_result[0]:
+                                    self.game_won = check_result[0]
+                                    self.winner = check_result[1]
+                                else:
+                                    # Check for a tie
+                                    tie_check_result = self.board.check_tie()
+                                    self.game_won = tie_check_result[0]
+                                    self.winner = tie_check_result[1]
+
+                                self.turn = "BLUE"
+                        # if p2's turn
+                        else:
+                            # Check moves
+                            move_index = self.p2.make_move(self.board)
+
+                            new_piece = Piece(self.p2.color, self.board.get_tile_center(move_index), move_index)
+                            self.p1.pieces.append(move_index)
+                            self.pieces.add(new_piece)
+
+                            self.curr_move += 1 # Next move
+
+                            check_result = self.board.check_win(self.p2.pieces, "BLUE", self.p2) # Check for win
+                            if check_result[0]:
+                                self.game_won = check_result[0]
+                                self.winner = check_result[1]
+                            else:
+                                # Check for a tie
+                                tie_check_result = self.board.check_tie()
+                                self.game_won = tie_check_result[0]
+                                self.winner = tie_check_result[1]
+
+                            self.turn = "RED"
+
+                    # print(f"Mouse button clicked at {coords} --- nearest to the tile at index {nearest_tile}")
+
+        # Clear the screen
+        self.screen.fill(BLACK)
+
+        # Display the score
+        p1_score = self.font20.render(f"RED: {self.p1.score}", True, WHITE)
+        p2_score = self.font20.render(f"BLUE: {self.p2.score}", True, WHITE)
+
+        self.screen.blit(p1_score, (10, 10))
+        self.screen.blit(p2_score, (10, 30))
+
+        # Display the turn
+        turn = self.font40.render(f"{self.turn}'s turn", True, WHITE)
+        self.screen.blit(turn, (screen_width / 2 - 75, 15))
+
+        # Draw all of the vertical and horizontal lines onto the screen
+        for line in self.lines[0]:
+            pygame.draw.line(self.screen, WHITE, line[0], line[1], 1)
+
+        for line in self.lines[1]:
+            pygame.draw.line(self.screen, WHITE, line[0], line[1], 1)
+
+        # Draw pieces
+        for piece in self.pieces:
+            self.screen.blit(piece.surface, piece.rect)
+
+        # Update the display
+        pygame.display.flip()
+        self.game_clock.tick(60)
+
     def win_screen(self):
         for event in pygame.event.get():
             # Handle quit event

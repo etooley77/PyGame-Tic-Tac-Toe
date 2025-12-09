@@ -10,15 +10,15 @@ class AIPlayer(Player):
 		super().__init__(color)
 
     # AI helper functions
-	def check_board(self):
-		pass
-
-	def check_player_pieces(self):
-		pass
-
-	def check_self_pieces(self):
+	def check_move(self):
+		# Make the move and check its result
 		pass
 
 	# Overall function to make a move for AI
-	def make_move(self):
-		pass
+	def make_move(self, board, player_pieces):
+		curr_board = board
+		for index, tile in enumerate(curr_board):
+			if tile == "_":
+				self.check_move(index)
+
+				# CREATE A HELPER FUNCTION FILE FOR FUNCTIONS SUCH AS CHECK WIN, INSTEAD OF ABSTRACTING IT INTO THE BOARD CLASS ALONE!
