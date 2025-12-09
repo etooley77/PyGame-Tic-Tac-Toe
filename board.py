@@ -87,9 +87,11 @@ class Board():
         return False
     
     # Sets the tile status to filled if it is empty (does not need to work backwards since players don't take their pieces back)
-    def set_tile_status(self, tile_index, player_char="x"):
+    def set_tile_status(self, tile_index, char):
         if self.get_tile_status(tile_index):
-            self.board[tile_index] = player_char
+            self.board[tile_index] = char
+            return True
+        return False
 
         # print(self.board)
 

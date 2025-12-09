@@ -133,7 +133,7 @@ class Game():
             # Handle keydown events
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    print(self.last_winner)
+                    print(self.board.board)
             # Handle mouse click events
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if not self.game_won:
@@ -146,49 +146,47 @@ class Game():
                         # If p1's turn
                         if self.turn == "RED":
                             # Mark tile as covered
-                            self.board.set_tile_status(nearest_tile)
+                            if self.board.set_tile_status(nearest_tile, self.p1.char):
+                                # Create new piece with p1's color
+                                new_piece = Piece(self.p1.color, self.board.get_tile_center(nearest_tile), nearest_tile)
+                                self.p1.pieces.append(nearest_tile)
+                                self.pieces.add(new_piece)
 
-                            # Create new piece with p1's color
-                            new_piece = Piece(self.p1.color, self.board.get_tile_center(nearest_tile), nearest_tile)
-                            self.p1.pieces.append(nearest_tile)
-                            self.pieces.add(new_piece)
+                                self.curr_move += 1 # Next move
 
-                            self.curr_move += 1 # Next move
+                                check_result = self.board.check_win(self.p1.pieces, "RED", self.p1) # Check for win
+                                if check_result[0]:
+                                    self.game_won = check_result[0]
+                                    self.winner = check_result[1]
+                                else:
+                                    # Check for a tie
+                                    tie_check_result = self.board.check_tie()
+                                    self.game_won = tie_check_result[0]
+                                    self.winner = tie_check_result[1]
 
-                            check_result = self.board.check_win(self.p1.pieces, "RED", self.p1) # Check for win
-                            if check_result[0]:
-                                self.game_won = check_result[0]
-                                self.winner = check_result[1]
-                            else:
-                                # Check for a tie
-                                tie_check_result = self.board.check_tie()
-                                self.game_won = tie_check_result[0]
-                                self.winner = tie_check_result[1]
-
-                            self.turn = "BLUE"
+                                self.turn = "BLUE"
                         # if p2's turn
                         else:
                             # Mark tile as covered
-                            self.board.set_tile_status(nearest_tile)
+                            if self.board.set_tile_status(nearest_tile, self.p2.char):
+                                # Create new piece with p2's color
+                                new_piece = Piece(self.p2.color, self.board.get_tile_center(nearest_tile), nearest_tile)
+                                self.p2.pieces.append(nearest_tile)
+                                self.pieces.add(new_piece)
 
-                            # Create new piece with p2's color
-                            new_piece = Piece(self.p2.color, self.board.get_tile_center(nearest_tile), nearest_tile)
-                            self.p2.pieces.append(nearest_tile)
-                            self.pieces.add(new_piece)
+                                self.curr_move += 1 # Next move
 
-                            self.curr_move += 1 # Next move
+                                check_result = self.board.check_win(self.p2.pieces, "BLUE", self.p2) # Check for win
+                                if check_result[0]:
+                                    self.game_won = check_result[0]
+                                    self.winner = check_result[1]
+                                else:
+                                    # Check for a tie
+                                    tie_check_result = self.board.check_tie()
+                                    self.game_won = tie_check_result[0]
+                                    self.winner = tie_check_result[1]
 
-                            check_result = self.board.check_win(self.p2.pieces, "BLUE", self.p2) # Check for win
-                            if check_result[0]:
-                                self.game_won = check_result[0]
-                                self.winner = check_result[1]
-                            else:
-                                # Check for a tie
-                                tie_check_result = self.board.check_tie()
-                                self.game_won = tie_check_result[0]
-                                self.winner = tie_check_result[1]
-
-                            self.turn = "RED"
+                                self.turn = "RED"
 
                     # print(f"Mouse button clicked at {coords} --- nearest to the tile at index {nearest_tile}")
 
