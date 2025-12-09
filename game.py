@@ -3,6 +3,7 @@ import sys
 from time import sleep
 
 from constants import *
+from helpers import *
 
 from board import Board
 from piece import Piece
@@ -154,13 +155,13 @@ class Game():
 
                                 self.curr_move += 1 # Next move
 
-                                check_result = self.board.check_win(self.p1.pieces, "RED", self.p1) # Check for win
+                                check_result = check_win(self.p1.pieces, "RED", self.p1) # Check for win
                                 if check_result[0]:
                                     self.game_won = check_result[0]
                                     self.winner = check_result[1]
                                 else:
                                     # Check for a tie
-                                    tie_check_result = self.board.check_tie()
+                                    tie_check_result = check_tie(self.board.board)
                                     self.game_won = tie_check_result[0]
                                     self.winner = tie_check_result[1]
 
@@ -176,13 +177,13 @@ class Game():
 
                                 self.curr_move += 1 # Next move
 
-                                check_result = self.board.check_win(self.p2.pieces, "BLUE", self.p2) # Check for win
+                                check_result = check_win(self.p2.pieces, "BLUE", self.p2) # Check for win
                                 if check_result[0]:
                                     self.game_won = check_result[0]
                                     self.winner = check_result[1]
                                 else:
                                     # Check for a tie
-                                    tie_check_result = self.board.check_tie()
+                                    tie_check_result = check_tie(self.board.board)
                                     self.game_won = tie_check_result[0]
                                     self.winner = tie_check_result[1]
 
